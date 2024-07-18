@@ -1,0 +1,64 @@
+<?xml version='1.0' standalone='yes'?>
+<!DOCTYPE PLUGIN [
+<!ENTITY name      "intel-gvt-d">
+<!ENTITY author    "ich777">
+<!ENTITY version   "2021.03.04">
+<!ENTITY md5       "TOBEFILLED">
+<!ENTITY launch    "Settings/Intel-GVT-d">
+<!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
+<!ENTITY pluginURL "https://raw.githubusercontent.com/ich777/unraid-&name;/master/unraid-&name;.plg">
+]>
+
+<PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.0" support="https://forums.unraid.net/topic/92865-support-ich777-nvidiadvb-kernel-helperbuilder-docker/">
+
+<CHANGES>
+
+###2021.03.04
+- Initial Release
+
+</CHANGES>
+
+<FILE Run="/bin/bash">
+<INLINE>
+rm -f $(ls /boot/config/plugins/&name;/&name;*.txz 2>/dev/null|grep -v '&version;')
+</INLINE>
+</FILE>
+
+<FILE Name="/boot/config/plugins/&name;/&name;-&version;.txz" Run="upgradepkg --install-new">
+<URL>https://raw.github.com/ich777/unraid-&name;/master/archive/&name;-&version;.txz</URL>
+<MD5>&md5;</MD5>
+</FILE>
+
+<FILE Name="&plugdir;/README.md">
+<INLINE>
+**Intel GVT-d**
+
+This Plugin allows you to make use of Intel GVT-d.
+</INLINE>
+</FILE>
+
+<FILE Run="/bin/bash">
+<INLINE>
+echo "----------------------------------"
+echo "---Intel GVT-d plugin installed---"
+echo "----------------------------------"
+</INLINE>
+</FILE>
+
+
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+echo "-------------------------------------"
+echo "---Uninstalling Intel GVT-d plugin---"
+echo "-------------------------------------"
+removepkg &name;-&version;
+rm -rf &plugdir;
+rm -rf /boot/config/plugins/&name;
+echo
+echo "---------------------------------------------------------"
+echo "---Intel GVT-d uninstalled, please reboot your server!---"
+echo "---------------------------------------------------------"
+echo
+</INLINE>
+</FILE>
+</PLUGIN>
