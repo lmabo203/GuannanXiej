@@ -65,6 +65,16 @@ echo "-------------------------------------"
 echo "---Uninstalling Intel GVT-d plugin---"
 echo "-------------------------------------"
 removepkg &name;-&version;
+if [ -f /boot/config/plugins/intel-gvt-d/uuid.cfg ]; then
+    while read -r line
+    do
+        GVT_PCI="$(echo $line | awk '{print $1}')"
+        echo "---Removing vGPU's, please wait!---"
+        echo 1 > /sys/bus/pci/devices/${line%% *}/${line##* }/remove
+    done < "/boot/config/plugins/intel-gvt-d/uuid.cfg"
+else
+    echo "---No vGPU's found, nothing to do---"
+fi
 rm -rf &plugdir;
 rm -rf /boot/config/plugins/&name;
 echo
