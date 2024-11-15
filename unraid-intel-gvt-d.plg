@@ -47,7 +47,7 @@ if [ -f /boot/config/plugins/intel-gvt-d/uuid.cfg ]; then
         GVT_MODE="$(echo $line | awk '{print $2}')"
         echo "---Creating vGPU with mode ${GVT_MODE} and UUID: ${line##* }---"
         echo "${line##* }" > "/sys/devices/pci${GVT_DOM}/${GVT_PCI}/mdev_supported_types/${GVT_MODE}/create"
-    done < "/boot/config/plugins/intel-gvt-d/uuid.cfg"
+    done &lt; "/boot/config/plugins/intel-gvt-d/uuid.cfg"
 else
     echo "---No vGPU's found, nothing to do---"
 fi
@@ -71,7 +71,7 @@ if [ -f /boot/config/plugins/intel-gvt-d/uuid.cfg ]; then
         GVT_PCI="$(echo $line | awk '{print $1}')"
         echo "---Removing vGPU's, please wait!---"
         echo 1 > /sys/bus/pci/devices/${line%% *}/${line##* }/remove
-    done < "/boot/config/plugins/intel-gvt-d/uuid.cfg"
+    done &lt; "/boot/config/plugins/intel-gvt-d/uuid.cfg"
 else
     echo "---No vGPU's found, nothing to do---"
 fi
