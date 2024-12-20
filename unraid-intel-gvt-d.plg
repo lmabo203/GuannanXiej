@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "intel-gvt-d">
 <!ENTITY author    "ich777">
-<!ENTITY version   "2021.03.04">
-<!ENTITY md5       "d8366003fea370f58adfb22dc5da1d38">
+<!ENTITY version   "2021.03.12">
+<!ENTITY md5       "507257b06401f27e3c0fa608be8eeb5c">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY pluginURL "https://raw.githubusercontent.com/ich777/unraid-&name;/master/unraid-&name;.plg">
@@ -12,6 +12,10 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.0" support="https://forums.unraid.net/topic/92865-support-ich777-nvidiadvb-kernel-helperbuilder-docker/">
 
 <CHANGES>
+
+###2021.03.12
+- Fixed permission issues
+- Added initial instructions
 
 ###2021.03.04
 - Initial Release
@@ -25,7 +29,7 @@ rm -f $(ls /boot/config/plugins/&name;/&name;*.txz 2>/dev/null|grep -v '&version
 </FILE>
 
 <FILE Name="/boot/config/plugins/&name;/&name;-&version;.txz" Run="installpkg">
-<URL>https://raw.github.com/ich777/unraid-&name;/master/archive/&name;-&version;.txz</URL>
+<URL>https://raw.github.com/ich777/unraid-&name;/master/packages/&name;-&version;.txz</URL>
 <MD5>&md5;</MD5>
 </FILE>
 
