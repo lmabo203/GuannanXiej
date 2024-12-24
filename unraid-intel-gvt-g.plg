@@ -1,0 +1,91 @@
+<?xml version='1.0' standalone='yes'?>
+<!DOCTYPE PLUGIN [
+<!ENTITY name      "intel-gvt-g">
+<!ENTITY author    "ich777">
+<!ENTITY version   "2021.03.16">
+<!ENTITY md5       "507257b06401f27e3c0fa608be8eeb5c">
+<!ENTITY launch    "Settings/&name;">
+<!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
+<!ENTITY pluginURL "https://raw.githubusercontent.com/ich777/unraid-&name;/master/unraid-&name;.plg">
+]>
+
+<PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.0" support="https://forums.unraid.net/topic/92865-support-ich777-nvidiadvb-kernel-helperbuilder-docker/">
+
+<CHANGES>
+
+###2021.03.12
+- Fixed permission issues
+- Added initial instructions
+
+###2021.03.04
+- Initial Release
+
+</CHANGES>
+
+<FILE Run="/bin/bash">
+<INLINE>
+rm -f $(ls /boot/config/plugins/&name;/&name;*.txz 2>/dev/null|grep -v '&version;')
+</INLINE>
+</FILE>
+
+<FILE Name="/boot/config/plugins/&name;/&name;-&version;.txz" Run="installpkg">
+<URL>https://raw.github.com/ich777/unraid-&name;/master/packages/&name;-&version;.txz</URL>
+<MD5>&md5;</MD5>
+</FILE>
+
+<FILE Name="&plugdir;/README.md">
+<INLINE>
+**Intel GVT-g**
+
+This Plugin allows you to make use of Intel GVT-g.
+</INLINE>
+</FILE>
+
+<FILE Run="/bin/bash">
+<INLINE>
+if [ -f /boot/config/plugins/intel-gvt-g/uuid.cfg ]; then
+    while read -r line
+    do
+        GVT_PCI="$(echo $line | awk '{print $1}')"
+        GVT_DOM=${GVT_PCI%:*}
+        GVT_MODE="$(echo $line | awk '{print $2}')"
+        echo "---Creating vGPU with mode ${GVT_MODE} and UUID: ${line##* }---"
+        echo "${line##* }" > "/sys/devices/pci${GVT_DOM}/${GVT_PCI}/mdev_supported_types/${GVT_MODE}/create"
+    done &lt; "/boot/config/plugins/intel-gvt-g/uuid.cfg"
+else
+    echo "---No vGPU's found, nothing to do---"
+fi
+
+echo "----------------------------------"
+echo "---Intel GVT-g plugin installed---"
+echo "----------------------------------"
+</INLINE>
+</FILE>
+
+
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+echo "-------------------------------------"
+echo "---Uninstalling Intel GVT-g plugin---"
+echo "-------------------------------------"
+removepkg &name;-&version;
+if [ -f /boot/config/plugins/intel-gvt-g/uuid.cfg ]; then
+    while read -r line
+    do
+        GVT_PCI="$(echo $line | awk '{print $1}')"
+        echo "---Removing vGPU's, please wait!---"
+        echo 1 > /sys/bus/pci/devices/${line%% *}/${line##* }/remove
+    done &lt; "/boot/config/plugins/intel-gvt-g/uuid.cfg"
+else
+    echo "---No vGPU's found, nothing to do---"
+fi
+rm -rf &plugdir;
+rm -rf /boot/config/plugins/&name;
+echo
+echo "---------------------------------------------------------"
+echo "---Intel GVT-g uninstalled, please reboot your server!---"
+echo "---------------------------------------------------------"
+echo
+</INLINE>
+</FILE>
+</PLUGIN>
