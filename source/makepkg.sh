@@ -1,5 +1,5 @@
 #!/bin/bash
-PLUGIN_NAME="intel-gvt-d"
+PLUGIN_NAME="intel-gvt-g"
 BASE_DIR="/usr/local/emhttp/plugins"
 TMP_DIR="/tmp/${PLUGIN_NAME}_"$(echo $RANDOM)""
 VERSION="$(date +'%Y.%m.%d')"
