@@ -7,12 +7,16 @@
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY plugin    "/boot/config/plugins/&name;">
-<!ENTITY pluginURL "https://raw.githubusercontent.com/ich777/unraid-&name;/dev/unraid-&name;.plg">
+<!ENTITY pluginURL "https://raw.githubusercontent.com/ich777/unraid-&name;/master/unraid-&name;.plg">
 ]>
 
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.0" support="https://forums.unraid.net/topic/92865-support-ich777-nvidiadvb-kernel-helperbuilder-docker/">
 
 <CHANGES>
+
+###2021.03.22
+- Added download for custom i915 Kernel Module so that no Custom unRAID images are needed
+- Added detection if Custom unRAID images are used or not
 
 ###2021.03.12
 - Fixed permission issues
@@ -112,8 +116,13 @@ fi
 }
 
 #Check if Intel GVT-g Package are already downloaded
-check
-install > /dev/null
+if [ -z "$(modinfo i915 | grep "gvt")" ]; then
+  check
+  install > /dev/null
+else
+  echo
+  echo "-----------Intel GVT-g already found, nothing to do------------"
+fi
 
 echo
 echo "-------------Installation of Intel GVT-g successfull-------------"
