@@ -6,12 +6,17 @@
 <!ENTITY md5       "4220627d636c69799a0d413b1146cdd1">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
+<!ENTITY plugin    "/boot/config/plugins/&name;">
 <!ENTITY pluginURL "https://raw.githubusercontent.com/ich777/unraid-&name;/master/unraid-&name;.plg">
 ]>
 
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.0" support="https://forums.unraid.net/topic/92865-support-ich777-nvidiadvb-kernel-helperbuilder-docker/">
 
 <CHANGES>
+
+###2021.03.22
+- Added download for custom i915 Kernel Module so that no Custom unRAID images are needed
+- Added detection if Custom unRAID images are used or not
 
 ###2021.03.12
 - Fixed permission issues
@@ -43,22 +48,106 @@ This Plugin allows you to make use of Intel GVT-g.
 
 <FILE Run="/bin/bash">
 <INLINE>
-if [ -f /boot/config/plugins/intel-gvt-g/uuid.cfg ]; then
+
+#Wait for Network and timeout after 30 seconds
+HOST="www.google.com"
+for i in {1..10}; do
+  ping -c1 $HOST &amp;> /dev/null &amp;&amp; break;
+done
+
+KERNEL_V="$(uname -r)"
+PACKAGE="gvtg"
+DL_URL="https://github.com/ich777/unraid-plugins-repo/releases/download/$KERNEL_V"
+
+if [ ! -d "&plugin;/packages/${KERNEL_V%%-*}" ]; then
+  mkdir -p "&plugin;/packages/${KERNEL_V%%-*}"
+fi
+
+#Check for old packages
+rm -rf $(ls -d &plugin;/packages/* | grep -v "${KERNEL_V%%-*}")
+
+download() {
+#Download GVT-g Package
+if wget -q -nc --show-progress --progress=bar:force:noscroll -O "&plugin;/packages/${KERNEL_V%%-*}/${PACKAGE}-1.txz" "${DL_URL}/${PACKAGE}-1.txz" ; then
+  if [ "$(md5sum "&plugin;/packages/${KERNEL_V%%-*}/${PACKAGE}-1.txz" | cut -d ' ' -f1)" != "$(wget -qO- "${DL_URL}/${PACKAGE}-1.txz.md5" | cut -d ' ' -f1)" ]; then
+    echo
+    echo "---CHECKSUM ERROR!---"
+    exit 1
+  fi
+  echo
+  echo "-------Sucessfully downloaded Intel GVT-g, please wait...!--------"
+else
+  echo
+  echo "-------------------Can't download Intel GVT-g---------------------"
+  exit 1
+fi
+}
+
+check() {
+if [ ! -f "&plugin;/packages/${KERNEL_V%%-*}/${PACKAGE}-1.txz" ]; then
+  echo
+  echo "--------------------Downloading Intel GVT-g----------------------"
+  echo "---This could take some time, please don't close this window!----"
+  download
+elif [ ! -s "&plugin;/packages/${KERNEL_V%%-*}/${PACKAGE}-1.txz" ]; then
+  rm -rf &plugin;/packages/${KERNEL_V%%-*}/${PACKAGE}-1.txz
+  echo
+  echo "----Download is empty please contact the developer of this plugin if the-----"
+  echo "----------plugin has been already built against that Kernel version----------"
+  exit 1
+else
+  echo
+  echo "------------Intel GVT-g found locally, please wait...!-----------"
+fi
+}
+
+install() {
+#Install Intel GVT-g Package
+/sbin/installpkg "&plugin;/packages/${KERNEL_V%%-*}/${PACKAGE}-1.txz"
+depmod -a
+#Check if Intel-GPU-TOP is installed
+if [ ! -z "$(lsmod | grep "i915")" ]; then
+  /sbin/modprobe -rf i915
+fi
+/sbin/modprobe i915 enable_gvt=1
+/sbin/modprobe vfio-mdev
+/sbin/modprobe mdev
+/sbin/modprobe kvmgt
+}
+
+#Check if Intel GVT-g Package are already downloaded
+if [ -z "$(modinfo i915 | grep "gvt")" ]; then
+  check
+  install > /dev/null
+else
+  echo
+  echo "-----------Intel GVT-g already found, nothing to do------------"
+fi
+
+echo
+echo "-------------Installation of Intel GVT-g successfull-------------"
+echo
+
+#Check for preconfigured vGPU's
+if [ -f &plugin;/uuid.cfg ]; then
     while read -r line
     do
         GVT_PCI="$(echo $line | awk '{print $1}')"
         GVT_DOM=${GVT_PCI%:*}
         GVT_MODE="$(echo $line | awk '{print $2}')"
+        echo
         echo "---Creating vGPU with mode ${GVT_MODE} and UUID: ${line##* }---"
         echo "${line##* }" > "/sys/devices/pci${GVT_DOM}/${GVT_PCI}/mdev_supported_types/${GVT_MODE}/create"
-    done &lt; "/boot/config/plugins/intel-gvt-g/uuid.cfg"
+    done &lt; "&plugin;/uuid.cfg"
 else
-    echo "---No vGPU's found, nothing to do---"
+    echo
+    echo "-----------------No vGPU's found, nothing to do------------------"
 fi
 
-echo "----------------------------------"
-echo "---Intel GVT-g plugin installed---"
-echo "----------------------------------"
+echo
+echo "-----------------------------------------------------------------"
+echo "-----------------Intel GVT-g plugin installed--------------------"
+echo "-----------------------------------------------------------------"
 </INLINE>
 </FILE>
 
