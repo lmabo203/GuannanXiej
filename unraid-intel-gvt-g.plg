@@ -17,6 +17,7 @@
 ###2021.03.22
 - Added download for custom i915 Kernel Module so that no Custom unRAID images are needed
 - Added detection if Custom unRAID images are used or not
+- Use IP address instead of hostname for online check
 
 ###2021.03.12
 - Fixed permission issues
@@ -50,7 +51,7 @@ This Plugin allows you to make use of Intel GVT-g.
 <INLINE>
 
 #Wait for Network and timeout after 30 seconds
-HOST="www.google.com"
+HOST="8.8.8.8"
 for i in {1..10}; do
   ping -c1 $HOST &amp;> /dev/null &amp;&amp; break;
 done
