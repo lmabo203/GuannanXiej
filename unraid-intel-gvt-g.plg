@@ -76,7 +76,7 @@ if wget -q -nc --show-progress --progress=bar:force:noscroll -O "&plugin;/packag
     exit 1
   fi
   echo
-  echo "-------Sucessfully downloaded Intel GVT-g, please wait...!--------"
+  echo "-------Successfully downloaded Intel GVT-g, please wait...!-------"
 else
   echo
   echo "-------------------Can't download Intel GVT-g---------------------"
@@ -126,7 +126,7 @@ else
 fi
 
 echo
-echo "-------------Installation of Intel GVT-g successfull-------------"
+echo "-------------Installation of Intel GVT-g successful--------------"
 echo
 
 #Check for preconfigured vGPU's
