@@ -2,7 +2,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "intel-gvt-g">
 <!ENTITY author    "ich777">
-<!ENTITY version   "2021.03.16">
+<!ENTITY version   "2021.03.27">
 <!ENTITY md5       "4220627d636c69799a0d413b1146cdd1">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.0" support="https://forums.unraid.net/topic/92865-support-ich777-nvidiadvb-kernel-helperbuilder-docker/">
 
 <CHANGES>
+
+###2021.03.27
+- Corrected permission issue for '/dev/dri'
 
 ###2021.03.22
 - Added download for custom i915 Kernel Module so that no Custom unRAID images are needed
@@ -114,6 +117,8 @@ fi
 /sbin/modprobe vfio-mdev
 /sbin/modprobe mdev
 /sbin/modprobe kvmgt
+sleep 1
+chmod -R 777 /dev/dri
 }
 
 #Check if Intel GVT-g Package are already downloaded
