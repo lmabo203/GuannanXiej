@@ -166,7 +166,7 @@ if [ -f /boot/config/plugins/intel-gvt-g/vms.conf ]; then
         sleep 1
         /usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh check_vm_xml "${VM_NAME// /+}" "$(cat /etc/gvtgcfg/"${VM_NAME// /_}"_"${MODE}".uuid)"
         echo "---Restored configuration for vGPU from VM ${VM_NAME}!---"
-    done < "/boot/config/plugins/intel-gvt-g/vms.conf"
+    done &lt; "/boot/config/plugins/intel-gvt-g/vms.conf"
     echo "---Configuration restoring finished---"
 fi
 
@@ -187,7 +187,7 @@ while read -r line
 do
     line="$(echo $line | awk -F'[{}]' '{print $2"+with+mode+"$4}')"
     usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh delete_vm_assignment "${line// /+}"
-done < "/boot/config/plugins/intel-gvt-g/vms.conf"
+done &lt; "/boot/config/plugins/intel-gvt-g/vms.conf"
 rm -rf /etc/gvtgcfg
 removepkg &name;-&version;
 rm -rf &plugdir;
