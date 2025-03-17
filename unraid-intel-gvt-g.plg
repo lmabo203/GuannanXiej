@@ -2,7 +2,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "intel-gvt-g">
 <!ENTITY author    "ich777">
-<!ENTITY version   "2021.04.28">
+<!ENTITY version   "2021.04.28a">
 <!ENTITY md5       "68da030c44cf8da7716115858c1630b9">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
@@ -14,7 +14,7 @@
 
 <CHANGES>
 
-###2021.04.28
+###2021.04.28a
 - Rewrote plugin to interact directly with the VMs
 
 ###2021.03.27
@@ -137,23 +137,6 @@ echo
 echo "-------------Installation of Intel GVT-g successful--------------"
 echo
 
-if [ -f /boot/config/plugins/intel-gvt-g/vms.conf ]; then
-    echo "---Restoring configuration---"
-    if [ ! -d /etc/gvtgcfg ]; then
-        mkdir -p /etc/gvtgcfg
-    fi
-    while read -r line
-    do
-        VM_NAME="$(echo $line | awk -F'[{}]' '{print $2}')"
-        MODE="$(echo $line | awk -F'[{}]' '{print $4}')"
-        echo "$(uuidgen)" > /etc/gvtgcfg/"${VM_NAME// /_}"_"${MODE}".uuid
-        sleep 1
-        /usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh check_vm_xml "${VM_NAME// /+}" "$(cat /etc/gvtgcfg/"${VM_NAME// /_}"_"${MODE}".uuid)"
-        echo "---Restored configuration for vGPU from VM ${VM_NAME}!---"
-    done &lt; "&plugin;/vms.conf"
-    echo "---Configuration restoring finished---"
-fi
-
 echo
 echo "-----------------------------------------------------------------"
 echo "-----------------Intel GVT-g plugin installed--------------------"
@@ -171,8 +154,7 @@ while read -r line
 do
     line="$(echo $line | awk -F'[{}]' '{print $2"+with+mode+"$4}')"
     usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh delete_vm_assignment "${line// /+}"
-done &lt; "&plugin;/vms.conf"
-rm -rf /etc/gvtgcfg
+done &lt; "/boot/config/plugins/intel-gvt-g/vms.conf"
 removepkg &name;-&version;
 rm -rf &plugdir;
 rm -rf /boot/config/plugins/&name;
