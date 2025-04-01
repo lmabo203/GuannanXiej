@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "intel-gvt-g">
 <!ENTITY author    "ich777">
-<!ENTITY version   "2021.04.28a">
-<!ENTITY md5       "07a32d7fb56111d632159e74cac864b0">
+<!ENTITY version   "2021.04.30">
+<!ENTITY md5       "3373f6b1f98835194b8096989e3f0d5b">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -13,6 +13,10 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.0" support="https://forums.unraid.net/topic/92865-support-ich777-nvidiadvb-kernel-helperbuilder-docker/">
 
 <CHANGES>
+
+###2021.04.30
+- Added additional time to wait after UUID for vGPU is created at start of the VM to avoid problems
+- Fixed bug where UUID isn't removed from the config after deleting a vGPU assignment
 
 ###2021.04.28a
 - Rewrote plugin to interact directly with the VMs
