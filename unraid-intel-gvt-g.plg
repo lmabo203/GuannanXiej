@@ -2,7 +2,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "intel-gvt-g">
 <!ENTITY author    "ich777">
-<!ENTITY version   "2021.04.30">
+<!ENTITY version   "2021.04.30a">
 <!ENTITY md5       "56275aaa1e80e368f631fde43541065b">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
@@ -14,7 +14,7 @@
 
 <CHANGES>
 
-###2021.04.30
+###2021.04.30a
 - Added additional time to wait after UUID for vGPU is created at start of the VM to avoid problems
 - Fixed bug where UUID isn't removed from the config after deleting a vGPU assignment
 
