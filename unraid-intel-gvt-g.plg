@@ -1,18 +1,21 @@
 <?xml version='1.0' standalone='yes'?>
 <!DOCTYPE PLUGIN [
-<!ENTITY name      "intel-gvt-g">
+<!ENTITY name      "gvt-g">
 <!ENTITY author    "ich777">
-<!ENTITY version   "2021.04.30a">
+<!ENTITY version   "2021.05.04">
 <!ENTITY md5       "56275aaa1e80e368f631fde43541065b">
-<!ENTITY launch    "Settings/&name;">
-<!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
-<!ENTITY plugin    "/boot/config/plugins/&name;">
+<!ENTITY launch    "Settings/intel-&name;">
+<!ENTITY plugdir   "/usr/local/emhttp/plugins/intel-&name;">
+<!ENTITY plugin    "/boot/config/plugins/intel-&name;">
 <!ENTITY pluginURL "https://raw.githubusercontent.com/ich777/unraid-&name;/master/unraid-&name;.plg">
 ]>
 
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.0" support="https://forums.unraid.net/topic/92865-support-ich777-nvidiadvb-kernel-helperbuilder-docker/">
 
 <CHANGES>
+
+###2021.05.04
+- Changed package name to avoid conflicts with other plugins
 
 ###2021.04.30a
 - Added additional time to wait after UUID for vGPU is created at start of the VM to avoid problems
@@ -44,7 +47,7 @@ rm -f $(ls /boot/config/plugins/&name;/&name;*.txz 2>/dev/null|grep -v '&version
 </INLINE>
 </FILE>
 
-<FILE Name="/boot/config/plugins/&name;/&name;-&version;.txz" Run="installpkg">
+<FILE Name="/boot/config/plugins/&name;/&name;-&version;.txz" Run="upgradepkg --install-new">
 <URL>https://raw.github.com/ich777/unraid-&name;/master/packages/&name;-&version;.txz</URL>
 <MD5>&md5;</MD5>
 </FILE>
