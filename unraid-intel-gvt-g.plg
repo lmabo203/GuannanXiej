@@ -7,7 +7,7 @@
 <!ENTITY launch    "Settings/intel-&name;">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/intel-&name;">
 <!ENTITY plugin    "/boot/config/plugins/intel-&name;">
-<!ENTITY pluginURL "https://raw.githubusercontent.com/ich777/unraid-&name;/master/unraid-&name;.plg">
+<!ENTITY pluginURL "https://raw.githubusercontent.com/ich777/unraid-intel-&name;/master/&name;-&version;.plg">
 ]>
 
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.0" support="https://forums.unraid.net/topic/92865-support-ich777-nvidiadvb-kernel-helperbuilder-docker/">
@@ -47,8 +47,8 @@ rm -f $(ls /boot/config/plugins/&name;/&name;*.txz 2>/dev/null|grep -v '&version
 </INLINE>
 </FILE>
 
-<FILE Name="/boot/config/plugins/&name;/&name;-&version;.txz" Run="upgradepkg --install-new">
-<URL>https://raw.github.com/ich777/unraid-&name;/master/packages/&name;-&version;.txz</URL>
+<FILE Name="&plugdir;/&name;-&version;.txz" Run="upgradepkg --install-new">
+<URL>&pluginURL;</URL>
 <MD5>&md5;</MD5>
 </FILE>
 
