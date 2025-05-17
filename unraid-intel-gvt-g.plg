@@ -48,7 +48,7 @@ rm -f $(ls &plugin;/&name;*.txz 2>/dev/null|grep -v '&version;')
 </FILE>
 
 <FILE Name="&plugin;/&name;-&version;.txz" Run="upgradepkg --install-new">
-<URL>https://github.com/ich777/unraid-&name;/raw/master/packages/&name;-&version;.txz</URL>
+<URL>https://github.com/ich777/unraid-intel-&name;/master/packages/&name;-&version;.txz</URL>
 <MD5>&md5;</MD5>
 </FILE>
 
