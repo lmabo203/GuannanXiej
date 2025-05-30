@@ -1,13 +1,13 @@
 <?xml version='1.0' standalone='yes'?>
 <!DOCTYPE PLUGIN [
-<!ENTITY name      "gvt-g">
+<!ENTITY name      "intel-gvt-g">
 <!ENTITY author    "ich777">
 <!ENTITY version   "2021.05.04">
 <!ENTITY md5       "56275aaa1e80e368f631fde43541065b">
-<!ENTITY launch    "Settings/intel-&name;">
-<!ENTITY plugdir   "/usr/local/emhttp/plugins/intel-&name;">
-<!ENTITY plugin    "/boot/config/plugins/intel-&name;">
-<!ENTITY pluginURL "https://raw.githubusercontent.com/ich777/unraid-intel-&name;/master/&name;-&version;.plg">
+<!ENTITY launch    "Settings/&name;">
+<!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
+<!ENTITY plugin    "/boot/config/plugins/&name;">
+<!ENTITY pluginURL "https://raw.githubusercontent.com/ich777/unraid-&name;/master/&name;-&version;.plg">
 ]>
 
 <PLUGIN name="intel-&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.0" support="https://forums.unraid.net/topic/92865-support-ich777-nvidiadvb-kernel-helperbuilder-docker/">
@@ -43,12 +43,12 @@
 
 <FILE Run="/bin/bash">
 <INLINE>
-rm -f $(ls &plugin;/&name;*.txz 2>/dev/null|grep -v '&version;')
+rm -f $(ls &plugin;/gvt-g;*.txz 2>/dev/null|grep -v '&version;')
 </INLINE>
 </FILE>
 
-<FILE Name="&plugin;/&name;-&version;.txz" Run="upgradepkg --install-new">
-<URL>https://raw.githubusercontent.com/ich777/unraid-intel-&name;/master/packages/&name;-&version;.txz</URL>
+<FILE Name="&plugin;/gvt-g-&version;.txz" Run="upgradepkg --install-new">
+<URL>https://raw.githubusercontent.com/ich777/unraid-&name;/master/packages/gvt-g-&version;.txz</URL>
 <MD5>&md5;</MD5>
 </FILE>
 
@@ -162,7 +162,7 @@ do
     line="$(echo $line | awk -F'[{}]' '{print $2"+with+mode+"$4}')"
     usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh delete_vm_assignment "${line// /+}"
 done &lt; "/boot/config/plugins/intel-gvt-g/vms.conf"
-removepkg &name;-&version;
+removepkg gvt-g-&version;
 rm -rf &plugdir;
 rm -rf /boot/config/plugins/&name;
 cp /etc/libvirt/hooks/qemu.orig /etc/libvirt/hooks/qemu
