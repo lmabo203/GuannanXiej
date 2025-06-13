@@ -43,12 +43,12 @@
 
 <FILE Run="/bin/bash">
 <INLINE>
-rm -f $(ls &plugin;/gvt-g;*.txz 2>/dev/null|grep -v '&version;')
+rm -f $(ls &plugin;/gvt.g;*.txz 2>/dev/null|grep -v '&version;')
 </INLINE>
 </FILE>
 
-<FILE Name="&plugin;/gvt-g-&version;.txz" Run="upgradepkg --install-new">
-<URL>https://raw.githubusercontent.com/ich777/unraid-&name;/master/packages/gvt-g-&version;.txz</URL>
+<FILE Name="&plugin;/gvt.g-&version;.txz" Run="upgradepkg --install-new">
+<URL>https://raw.githubusercontent.com/ich777/unraid-&name;/master/packages/gvt.g-&version;.txz</URL>
 <MD5>&md5;</MD5>
 </FILE>
 
@@ -162,7 +162,7 @@ do
     line="$(echo $line | awk -F'[{}]' '{print $2"+with+mode+"$4}')"
     usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh delete_vm_assignment "${line// /+}"
 done &lt; "/boot/config/plugins/intel-gvt-g/vms.conf"
-removepkg gvt-g-&version;
+removepkg gvt.g-&version;
 rm -rf &plugdir;
 rm -rf /boot/config/plugins/&name;
 cp /etc/libvirt/hooks/qemu.orig /etc/libvirt/hooks/qemu
