@@ -43,7 +43,7 @@
 
 <FILE Run="/bin/bash">
 <INLINE>
-rm -f $(ls &plugin;/gvt.g;*.txz 2>/dev/null|grep -v '&version;')
+rm -f $(ls &plugin;/gvt.g*.txz 2>/dev/null|grep -v '&version;')
 </INLINE>
 </FILE>
 
