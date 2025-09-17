@@ -63,7 +63,9 @@ rm -f $(ls &plugin;/gvt.g*.txz 2>/dev/null|grep -v '&version;')
 <INLINE>
 **Intel GVT-g**
 
-This Plugin allows you to make use of Intel GVT-g.
+Intel-GVT-g is a technology that provides mediated device passthrough for Intel iGPUs (Broadwell and newer). It can be used to virtualize the iGPU for multiple guest virtual machines and also in Docker containers, effectively providing near-native graphics performance in the virtual machine and still letting your host use the virtualized iGPU normally. This is useful if you want accelerated graphics in Windows virtual machines running without dedicated GPUs for full device passthrough.
+
+This means less power consumption, less heat output and better performance for your VM's.
 </INLINE>
 </FILE>
 
