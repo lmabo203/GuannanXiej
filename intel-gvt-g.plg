@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "intel-gvt-g">
 <!ENTITY author    "ich777">
-<!ENTITY version   "2021.05.14b">
-<!ENTITY md5       "76bf8e8958aaedfc0ee7a90191bcc6d5">
+<!ENTITY version   "2021.05.14c">
+<!ENTITY md5       "e568489629eb57f2331cae5a0a95a3e7">
 <!ENTITY launch    "Settings/&name;-main">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -13,6 +13,10 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.2" support="https://forums.unraid.net/topic/108650-plugin-intel-gvt-g/">
 
 <CHANGES>
+
+###2021.05.14c
+- Corrected a few typos
+- Updated Guide that only VM names without symbols and special characters are possible for now
 
 ###2021.05.14b
 - Corrected a few typos
@@ -69,7 +73,7 @@ rm -f $(ls &plugin;/gvt.g*.txz 2>/dev/null|grep -v '&version;')
 
 Intel-GVT-g is a technology that provides mediated device passthrough for Intel iGPUs (Broadwell and newer). It can be used to virtualize the iGPU for multiple guest virtual machines and also in Docker containers, effectively providing near-native graphics performance in the virtual machine and still letting your host use the virtualized iGPU normally. This is useful if you want accelerated graphics in Windows virtual machines running without dedicated GPUs for full device passthrough.
 
-This means less power consumption, less heat output and better performance for your VM's.
+This means less power consumption, less heat output and better performance for your VMs.
 </INLINE>
 </FILE>
 
