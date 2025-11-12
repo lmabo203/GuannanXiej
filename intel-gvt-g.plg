@@ -7,7 +7,7 @@
 <!ENTITY launch    "Settings/&name;-main">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY plugin    "/boot/config/plugins/&name;">
-<!ENTITY pluginURL "https://raw.githubusercontent.com/ich777/&name;/master/&name;-&version;.plg">
+<!ENTITY pluginURL "https://raw.githubusercontent.com/ich777/&name;/master/&name;.plg">
 ]>
 
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.2" support="https://forums.unraid.net/topic/108650-plugin-intel-gvt-g/">
