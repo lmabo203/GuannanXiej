@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "intel-gvt-g">
 <!ENTITY author    "ich777">
-<!ENTITY version   "2021.05.14c">
-<!ENTITY md5       "e568489629eb57f2331cae5a0a95a3e7">
+<!ENTITY version   "2021.05.18">
+<!ENTITY md5       "aa4b46b03adc66c48cf6ae49737b560d">
 <!ENTITY launch    "Settings/&name;-main">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.2" support="https://forums.unraid.net/topic/108650-plugin-intel-gvt-g/">
 
 <CHANGES>
+
+###2021.05.18
+- Fixed adapter not showing up on some motherboards where controller is named differently
 
 ###2021.05.14c
 - Corrected a few typos
