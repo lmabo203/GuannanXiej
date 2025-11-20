@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "intel-gvt-g">
 <!ENTITY author    "ich777">
-<!ENTITY version   "2021.05.18">
-<!ENTITY md5       "aa4b46b03adc66c48cf6ae49737b560d">
+<!ENTITY version   "2021.05.20">
+<!ENTITY md5       "754195758aeb0649c75ecf48c5ea5e69">
 <!ENTITY launch    "Settings/&name;-main">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -13,6 +13,11 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.2" support="https://forums.unraid.net/topic/108650-plugin-intel-gvt-g/">
 
 <CHANGES>
+
+###2021.05.20
+- Added GuC/HuC mode selection
+- Reogranized GUI a little bit
+- Fixed a few spelling errors
 
 ###2021.05.18
 - Fixed adapter not showing up on some motherboards where controller is named differently
@@ -83,6 +88,11 @@ This means less power consumption, less heat output and better performance for y
 <FILE Run="/bin/bash">
 <INLINE>
 
+#Create settings file if not found
+if [ ! -f "&plugin;/settings.cfg" ]; then
+  echo 'guc_huc_mode=default' > "&plugin;/settings.cfg"
+fi
+
 #Wait for Network and timeout after 30 seconds
 HOST="8.8.8.8"
 for i in {1..10}; do
@@ -137,13 +147,19 @@ fi
 
 install() {
 #Install Intel GVT-g Package
+GUC_HUC_MODE="$(cat &plugin;/settings.cfg | grep "guc_huc_mode=" | cut -d '=' -f2)"
+
 /sbin/installpkg "&plugin;/packages/${KERNEL_V%%-*}/${PACKAGE}-1.txz"
 depmod -a
 #Check if Intel-GPU-TOP is installed
 if [ ! -z "$(lsmod | grep "i915")" ]; then
   /sbin/modprobe -rf i915
 fi
-/sbin/modprobe i915 enable_gvt=1
+if [ "${GUC_HUC_MODE}" == "default" ]; then
+  /sbin/modprobe i915 enable_gvt=1
+else
+  /sbin/modprobe i915 enable_gvt=1 enable_guc=${GUC_HUC_MODE}
+fi
 /sbin/modprobe vfio-mdev
 /sbin/modprobe mdev
 /sbin/modprobe kvmgt
