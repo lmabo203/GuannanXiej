@@ -3,7 +3,7 @@
 <!ENTITY name      "intel-gvt-g">
 <!ENTITY author    "ich777">
 <!ENTITY version   "2021.05.20">
-<!ENTITY md5       "754195758aeb0649c75ecf48c5ea5e69">
+<!ENTITY md5       "052fd379a2a02b925ace99ac543a69c9">
 <!ENTITY launch    "Settings/&name;-main">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY plugin    "/boot/config/plugins/&name;">
