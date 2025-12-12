@@ -2,7 +2,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "intel-gvt-g">
 <!ENTITY author    "ich777">
-<!ENTITY version   "2021.05.20">
+<!ENTITY version   "2021.05.31">
 <!ENTITY md5       "052fd379a2a02b925ace99ac543a69c9">
 <!ENTITY launch    "Settings/&name;-main">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
@@ -10,9 +10,12 @@
 <!ENTITY pluginURL "https://raw.githubusercontent.com/ich777/&name;/master/&name;.plg">
 ]>
 
-<PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.2" max="6.10.0-beta2" support="https://forums.unraid.net/topic/108650-plugin-intel-gvt-g/">
+<PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.2" support="https://forums.unraid.net/topic/108650-plugin-intel-gvt-g/">
 
 <CHANGES>
+
+###2021.05.31
+- Compatibility changes for Unraid 6.10.0
 
 ###2021.05.20
 - Added GuC/HuC mode selection
@@ -147,14 +150,14 @@ fi
 
 install() {
 #Install Intel GVT-g Package
-GUC_HUC_MODE="$(cat &plugin;/settings.cfg | grep "guc_huc_mode=" | cut -d '=' -f2)"
-
 /sbin/installpkg "&plugin;/packages/${KERNEL_V%%-*}/${PACKAGE}-1.txz"
 depmod -a
-#Check if Intel-GPU-TOP is installed
-if [ ! -z "$(lsmod | grep "i915")" ]; then
-  /sbin/modprobe -rf i915
-fi
+}
+
+enable_module() {
+#Load Module
+GUC_HUC_MODE="$(cat &plugin;/settings.cfg | grep "guc_huc_mode=" | cut -d '=' -f2)"
+
 if [ "${GUC_HUC_MODE}" == "default" ]; then
   /sbin/modprobe i915 enable_gvt=1
 else
@@ -175,6 +178,17 @@ else
   echo
   echo "-----------Intel GVT-g already found, nothing to do------------"
 fi
+
+#Check if i915 module is already enabled
+if [ -z "$(lsmod | grep "i915")" ]; then
+  echo
+  echo "-----------------Loading Kernel Module 'i915'------------------"
+  enable_module > /dev/null
+else
+  echo
+  echo "-------------Kernel Module 'i915' already enabled--------------"
+fi
+
 
 echo
 echo "-------------Installation of Intel GVT-g successful--------------"
