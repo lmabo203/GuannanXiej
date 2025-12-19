@@ -15,6 +15,9 @@
 <CHANGES>
 
 ###2021.05.31
+- Enable Intel Kernel module with 'force_probe' to support new Intel CPUs without the need to modify syslinux.cfg
+
+###2021.05.31
 - Compatibility changes for Unraid 6.10.0
 
 ###2021.05.20
@@ -156,12 +159,21 @@ depmod -a
 
 enable_module() {
 #Load Module
+PROBE="$(lspci -nn | grep -E "VGA compatible controller|Display controller" | grep "Intel" | sort | tail -1 | grep -oE '\[[a-f0-9][a-f0-9][a-f0-9][a-f0-9]:[a-f0-9][a-f0-9][a-f0-9][a-f0-9]\]' | sed 's/[][]//g' | cut -d ':' -f2)" 
 GUC_HUC_MODE="$(cat &plugin;/settings.cfg | grep "guc_huc_mode=" | cut -d '=' -f2)"
 
-if [ "${GUC_HUC_MODE}" == "default" ]; then
-  /sbin/modprobe i915 enable_gvt=1
+if [ -z "${PROBE}" ]; then
+  if [ "${GUC_HUC_MODE}" == "default" ]; then
+    /sbin/modprobe i915 enable_gvt=1
+  else
+    /sbin/modprobe i915 enable_gvt=1 enable_guc=${GUC_HUC_MODE}
+  fi
 else
-  /sbin/modprobe i915 enable_gvt=1 enable_guc=${GUC_HUC_MODE}
+  if [ "${GUC_HUC_MODE}" == "default" ]; then
+    /sbin/modprobe i915 enable_gvt=1 force_probe=${PROBE}
+  else
+    /sbin/modprobe i915 enable_gvt=1 enable_guc=${GUC_HUC_MODE} force_probe=${PROBE}
+  fi
 fi
 /sbin/modprobe vfio-mdev
 /sbin/modprobe mdev
