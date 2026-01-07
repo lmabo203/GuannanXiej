@@ -2,7 +2,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "intel-gvt-g">
 <!ENTITY author    "ich777">
-<!ENTITY version   "2021.05.31">
+<!ENTITY version   "2021.06.15">
 <!ENTITY md5       "052fd379a2a02b925ace99ac543a69c9">
 <!ENTITY launch    "Settings/&name;-main">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
