@@ -2,7 +2,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "intel-gvt-g">
 <!ENTITY author    "ich777">
-<!ENTITY version   "2021.06.15">
+<!ENTITY version   "2021.06.18">
 <!ENTITY md5       "052fd379a2a02b925ace99ac543a69c9">
 <!ENTITY launch    "Settings/&name;-main">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.2" support="https://forums.unraid.net/topic/108650-plugin-intel-gvt-g/">
 
 <CHANGES>
+
+###2021.06.18
+- Changed plugin remove routine to not replace qemu hooks with backup qemu hooks file
 
 ###2021.06.15
 - Enable Intel Kernel module with 'force_probe' to support new Intel CPUs without the need to modify syslinux.cfg
@@ -227,7 +230,6 @@ done &lt; "/boot/config/plugins/intel-gvt-g/vms.conf"
 removepkg gvt.g-&version;
 rm -rf &plugdir;
 rm -rf /boot/config/plugins/&name;
-cp /etc/libvirt/hooks/qemu.orig /etc/libvirt/hooks/qemu
 rm -rf /etc/libvirt/hooks/qemu.orig
 echo
 echo "---------------------------------------------------------"
