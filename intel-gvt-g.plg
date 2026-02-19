@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "intel-gvt-g">
 <!ENTITY author    "ich777">
-<!ENTITY version   "2021.06.18">
-<!ENTITY md5       "052fd379a2a02b925ace99ac543a69c9">
+<!ENTITY version   "2021.06.20">
+<!ENTITY md5       "df8f98aea2431a1a8e957b2997d92e7b">
 <!ENTITY launch    "Settings/&name;-main">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.2" support="https://forums.unraid.net/topic/108650-plugin-intel-gvt-g/">
 
 <CHANGES>
+
+###2021.06.20
+- Added error message for not supported CPUs
 
 ###2021.06.18
 - Changed plugin remove routine to not replace qemu hooks with backup qemu hooks file
