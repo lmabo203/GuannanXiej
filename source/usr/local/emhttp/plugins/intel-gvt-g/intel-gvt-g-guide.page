@@ -1,0 +1,78 @@
+Menu="intel-gvt-g-main:2"
+Title="Guide"
+Cond="exec('if [ `cat /sys/module/i915/parameters/enable_gvt` == "Y" ]; then echo 1; else echo 0; fi')"
+---
+
+<script>
+//Don't execute commands again if page is refreshed
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+</script>
+
+<h2 style="text-align: center;"><span style="color: #0071c5;">Instructions</span></h2>
+<ul>
+<li>Make sure that your iGPU is not bound to VFIO and also no arguments are passed through in your syslinux.conf</li>
+<li>Make sure that your iGPU is set to the primary graphics adapter in the BIOS</li>
+<li>Make sure that your actually plugged in a Monitor or at least a Dummy Plug to your iGPU if you got other dedicated GPU's installed in your system</li>
+<li>Make sure that your VM is installed with the latest Q35 machine type</li>
+<li>Make sure that the VM is stopped</li>
+<li>Go to the <span style="color: #0071c5;">Intel-GVT-g</span> plugin page</li>
+<li>Select the VM that you want to usa a vGPU along with the mode and click on "Assign VM"</li>
+<li>Go back to the VM page and start the VM</li>
+<li>Go to the Intel Download Center: <a href="https://downloadcenter.intel.com/" target="_blank">Link</a> and download the latest driver inside your VM<br />(Select "Graphics" -&gt; and download the appropriate driver on the Intel Download Center)</li>
+<li>Install the driver and reboot</li>
+<li>After rebooting go to your device manager and you should see two Displays (the first should be the Intel iGPU and the second one should be the VNC display adapter)</li>
+</ul>
+<p><span style="text-decoration: underline;"><em>Make sure that the iGPU is working:</em></span></p>
+<ul>
+<li>Open up Task-Manager (right click the taskbar and select Task-Manager -&gt; in the bottom left click on "Show details" -&gt; go to the "Performance" tab and see if the iGPU is listed on the bottom)</li>
+<li>Go to youtube and play some video and see if the iGPU is actually used</li>
+</ul>
+<p><em>If the iGPU isn't shown in the Task-Manager go to your Device Manager and expand the Display section and see if the iGPU is in an error state, if yes go to the Troubleshooting section below, if the solution isn't listed there go to the <a href="https://forums.unraid.net/topic/108650-plugin-intel-gvt-g/" target="_blank">Support Thread</a> of the plugin.</em></p>
+<p><span style="text-decoration: underline;"><em>Optional recommended steps:</em></span></p>
+<ul>
+<li>Enable RDP in your Settings, install Parsec or your favourite kind of remote connection software and make sure that it working properly even after a restart</li>
+<li>Display output only on second screen (iGPU), please note that if you do this you will have no output on the VNC Remote and you are only able to see and connect to it remotely (you have to enable RDP or install your remote connection software in the first place!)</li>
+</ul>
+<h2 style="text-align: center;"><span style="color: red;">ATTENTION</span></h2>
+<p style="text-align: center;"><strong>Never add or remove a vGPU to a running VM, always make sure to stop the VM first!</strong></p>
+<p style="text-align: center;"><strong>Currently only VMs without symbols or special characters in the name are possible!</strong></p>
+<p style="text-align: left;">&nbsp;</p>
+<p>&nbsp;</p>
+<h2 style="text-align: center;"><span style="color: red;">Troubleshooting</span></h2>
+<ul>
+<li><strong>The plugin page lists no available Modes:</strong><br />Make sure that your iGPU is not bound to VFIO and also no arguments are passed through in your syslinux.conf<br />Make sure that you have set the iGPU to the primary graphics adapter in the BIOS and also plugged in a Monitor or at least a Dummy Plug to your iGPU<br /><br /></li>
+<li><strong>The iGPU in Device Manger shows Code 43:</strong><br />Make sure that you have selected the latest Q35 Machine type in the VM settings<br />Try to select OVMF instead of SeaBIOS or vice versa<br /><br /></li>
+<li><strong>"Execution error device not found: mediated device 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' not found":</strong><br />Go to the syslog in Unraid and look for a message that says:<br /><span style="background-color: #ffff00;">gvt: request xxMB avail 0MB max xxxMB taken xxxMB</span><br /><span style="background-color: #ffff00;">gvt: failed to create intel vgpu: -28</span><br />If you find this message you are out of GPU memory because a old UUID failed to delete or you are running already one or multiple VM with a vGPU assigned and you are out of VRAM<br />The ammount of available vGPU's at the same time is dependent on your CPU and Motherboard.<br /><br /></li>
+<li><strong>RDP or remote connection software not working/installed in the first place, no display output or frozen display output over VNC Remote:</strong><br />Stop the VM, go to the <span style="color: #0071c5;">Intel-GVT-g</span> plugin page and remove the assigned vGPU and start the VM again, this should bring up the VNC Remote screen again.<br /><br /></li>
+<li><strong>Button "<span style="background-color: #ff6600; color: #ffffff;">RESTORE QEMU CONFIGURATION</span>":</strong><br />If you have any trouble starting VMs you can reset the configuration of your QEMU hooks with this button, please use this Button only as the last troubleshooting step!!!
+<em>Don't click this button unless you know what you are doing!</em>
+<form id="s" method="post" ><input type="submit" onclick="return confirm('Are you sure to reset your Qemu Configuration?')" name="restoreQEMUcfg" value="Restore QEMU Configuration"></form><br /></li>
+<li><strong>GuC/HuC Firmware loading:<br/></strong>On supported Skylake and newer processors, some video features (e.g. CBR rate control on SKL low-power encoding mode) may require the use of an updated GPU firmware, which is loaded by default only on Gen 11+ hardware since Linux 5.4. Enabling GuC/HuC firmware loading can cause issues on some systems; disable it if you experience freezing (for example, after resuming from hibernation).<br/>For processors before Gen 11, it is necessary to select mode 2 to enable both GuC and HuC firmware loading.
+<form id="s" method="post">
+	<select name="guc_hucselected" required>
+	<option <?php echo ( ($_SESSION['guc_huc_mode_set']) == "default") ? 'selected="selected"' : '' ?> value=default> default = Default Driver Value</option>";
+	<option <?php echo ( ($_SESSION['guc_huc_mode_set']) == "0") ? 'selected="selected"' : '' ?> value=0> 0 = Disabled</option>";
+	<option <?php echo ( ($_SESSION['guc_huc_mode_set']) == "1") ? 'selected="selected"' : '' ?> value=1> 1 = Enable</option>";
+	<option <?php echo ( ($_SESSION['guc_huc_mode_set']) == "2") ? 'selected="selected"' : '' ?> value=2> 2 = Enable GuC/HuC 5th-10th Gen.</option>";
+</select>
+<input type="submit" name="setGuC_HuC" value="Change">
+</form>
+</li>
+</ul>
+
+<?php
+if(isset($_POST['restoreQEMUcfg'])) {
+shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh restore_qemu_cfg");
+echo '<script>parent.window.location.reload();</script>';
+}
+?>
+
+<?php
+if(isset($_POST['setGuC_HuC'])) {
+$guc_hucselected = $_POST["guc_hucselected"];
+shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh set_guc_huc $guc_hucselected");
+echo '<script>parent.window.location.reload();</script>';
+}
+?>

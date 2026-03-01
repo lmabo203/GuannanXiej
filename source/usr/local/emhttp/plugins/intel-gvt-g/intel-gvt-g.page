@@ -1,0 +1,173 @@
+Menu="intel-gvt-g-main:1"
+Title="Intel GVT-g"
+---
+<script>
+//Don't execute commands again if page is refreshed
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+</script>
+
+
+<?php
+//Get all ID's
+$_SESSION['gvtpci'] = shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh get_gvt_pci");
+$_SESSION['gvtadaptername'] = shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh get_gvt_adapter_name");
+$_SESSION['gvtavailmodes'] = shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh get_gvt_avail_modes {$_SESSION['gvtpci']}");
+$_SESSION['availvms'] = shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh get_gvt_avail_vms");
+$_SESSION['configuredvms'] = shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh get_avail_vm_assignments");
+$_SESSION['guc_huc_mode_set'] = shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh get_guc_huc_mode");
+?>
+
+<h1 style="text-align: center;"><a href="https://forums.unraid.net/topic/108650-plugin-intel-gvt-g/" target="_blank" rel="noopener"><span style="color: #0071C5;">Intel GVT-g</span></a></h1>
+<p style="text-align: center;">Is a technology that provides mediated device passthrough for Intel iGPUs (Broadwell and newer).<br />It can be used to virtualize the iGPU for multiple guest virtual machines and also in Docker containers, effectively providing near-native graphics performance in the virtual machine and still letting your host use the virtualized iGPU normally.<br />This is useful if you want accelerated graphics in Windows virtual machines running without dedicated GPUs for full device passthrough.</p>
+<p style="text-align: center;">This means less power consumption, less heat output and better performance for you VMs.</p>
+
+<?
+$GVTEnabled = `cat /sys/module/i915/parameters/enable_gvt`;
+if (isset($GVTEnabled ) === true && trim($GVTEnabled ) === 'Y'):
+?>
+<? if ($_SESSION['gvtavailmodes'] === null): ?>
+<div id="title">
+    <span class="left"></span>
+</div>
+<h1 style="text-align: center; color: red;"><span>GVT-g not supported</span></a></h1>
+<p style="text-align: center;"><strong>GVT-g is currently only supported on:</strong></p>
+<p style="text-align: center;"><strong>Client platforms:</strong> <span style="color: #ff0000;">5th, 6th, 7th, 8th, 9th and 10th Generation Intel&reg; Core Processor Graphics</span><br /><strong>Server platforms:</strong> <span style="color: #ff0000;">E3-v4, E3_v5, E3_v6, E-2xxx, W-12xx, W10xxx Intel&reg; Processor Graphics</span></p>
+<p style="text-align: center;">If you own one of the above listed CPUs please go to the <a href="https://forums.unraid.net/topic/108650-plugin-intel-gvt-g/" target="_blank">support thread</a> and create a post with your Diagnostics attached (Tools -&gt; Diagnostics -&gt; Download).</p>
+<? else: ?>
+<div>
+    <div id="title">
+        <span class="left"></span>
+    </div>
+    <table class="settings">
+        <tr>
+            <td><b><font size="+1">GVT-g Enabled</font></b></td>
+        </tr>
+        <tr>
+            <td><b><font>Found VGA Adapter:</b><br><?php echo ($_SESSION['gvtadaptername']); ?></font></td>
+            <td><b><font>Address:</b><br><?php echo ($_SESSION['gvtpci']); ?></font></td>
+
+        </tr>
+            <td><b><font>Overview of available modes:</b><br>i915-GVTg_V5_1: VMEM: <512MB, 2048MB>, up to 1920x1200<br>
+            i915-GVTg_V5_2: VMEM: <256MB, 1024MB>, up to 1920x1200<br>
+            i915-GVTg_V5_4: VMEM: <128MB, 512MB>, up to 1920x1200<br>
+            i915-GVTg_V5_8: VMEM: <64MB, 384MB>, up to 1024x768</font></td>
+            <td><b><font>Following modes are available:</b><br><?php echo str_replace("\n", '<br>', $_SESSION['gvtavailmodes']); ?></font></td>
+        <tr>
+        <?
+        if (!file_exists('/boot/config/plugins/intel-gvt-g/vms.conf')):
+        ?>
+        <td>No assigned vGPU for <?php echo ($_SESSION['gvtpci']); ?> found, select mode and VM:</td>
+            <td><form id="s" method="post" >
+                <select name="gvtselected" required>
+                    <option selected="selected" value="">Choose Mode</option>
+                        <?php
+                        $output = $_SESSION['gvtavailmodes'];
+                        $data = explode("\n", $output);
+                        var_dump($data);
+                        foreach($data as $item){
+                        echo "<option value=\"$item\"> $item</option>";
+                    }
+                    ?>
+                </select>
+                <select name="vmselected" required>
+                    <option selected="selected" value="">Choose VM</option>
+                        <?php
+                        $output = $_SESSION['availvms'];
+                        $data = explode("\n", $output);
+                        var_dump($data);
+                        foreach($data as $item){
+                        echo "<option value=\"$item\"> $item</option>";
+                    }
+                    ?>
+                </select>
+                <input type="submit" name="assignVM" value="Assign VM">
+                </form></td>
+        <? else: ?>
+            <?php
+            $_SESSION['availuuids'] = shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh get_avail_uuids {$_SESSION['gvtpci']}");
+            ?>
+            <td>To create another vGPU assignment for <?php echo ($_SESSION['gvtpci']); ?> select mode and VM:</td>
+            <td><form id="s" method="post" >
+                <select name="gvtselected" required>
+                    <option selected="selected" value="">Choose Mode</option>
+                        <?php
+                        $output = $_SESSION['gvtavailmodes'];
+                        $data = explode("\n", $output);
+                        var_dump($data);
+                        foreach($data as $item){
+                        echo "<option value=\"$item\"> $item</option>";
+                    }
+                    ?>
+                </select>
+                <select name="vmselected" required>
+                    <option selected="selected" value="">Choose VM</option>
+                        <?php
+                        $output = $_SESSION['availvms'];
+                        $data = explode("\n", $output);
+                        var_dump($data);
+                        foreach($data as $item){
+                        echo "<option value=\"$item\"> $item</option>";
+                    }
+                    ?>
+                </select>
+                <input type="submit" name="assignVM" value="Assign VM">
+                </form></td>
+            </tr>
+            <tr>
+              <td><b><font size="+1">Delete Assignment:</font></b><br>
+              <?php
+              $string = str_replace("\n", '<br>', $_SESSION['availuuids']);
+              echo str_replace(" ", ' | ', $string);
+              ?></td>
+            </tr>
+            <tr>
+            <td>To delete a vGPU assignment select the VM:</td>
+            <td><form id="s" method="post" >
+                <select name="deletevmassignment" required>
+                    <option selected="selected" value="">Choose to delete</option>
+                        <?php
+                        $output = $_SESSION['configuredvms'];
+                        $data = explode("\n", $output);
+                        var_dump($data);
+                        foreach($data as $item){
+                        echo "<option value=\"$item\"> $item</option>";
+                    }
+                    ?>
+                </select>
+                <input type="submit" name="deleteVMassignment" value="Delete">
+                </form></td>
+                    </tr>
+        <? endif; ?>
+        </tr>
+    </table>
+</div>
+
+<? endif; ?>
+
+<? else: ?>
+<div id="title">
+    <span class="left"></span>
+</div>
+<h1 style="text-align: center; color: red;"><span>GVT-g not enabled in Kernel Module i915</span></a></h1>
+<p style="text-align: center; color: red;">Please make sure that your iGPU isn't enabled in the 'go' file with the command 'modprobe i915' and also make sure that the file '/boot/config/modprobe.d/i915.conf' doesn't exist and reboot your server! Enabling the module is handled by the Plugin!</p>
+
+<? endif; ?>
+
+<?php
+if(isset($_POST['assignVM'])) {
+$gvtselected = $_POST["gvtselected"];
+$vmselected = urlencode($_POST["vmselected"]);
+shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh assign_vm $vmselected {$_SESSION['gvtpci']} $gvtselected");
+echo '<script>parent.window.location.reload();</script>';
+}
+?>
+
+<?php
+if(isset($_POST['deleteVMassignment'])) {
+$deletevmassignment = urlencode($_POST["deletevmassignment"]);
+shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh delete_vm_assignment $deletevmassignment");
+echo '<script>parent.window.location.reload();</script>';
+}
+?>

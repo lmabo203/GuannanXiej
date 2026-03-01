@@ -1,0 +1,5 @@
+Menu="Utilities"
+Type="xmenu"
+Title="Intel GVT-g"
+Icon="intel-gvt-g.png"
+Tabs="true"
