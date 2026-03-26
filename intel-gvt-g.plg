@@ -14,6 +14,9 @@
 
 <CHANGES>
 
+###2021.07.11
+- Added version check for packages directory
+
 ###2021.06.20
 - Added error message for not supported CPUs
 
@@ -115,8 +118,18 @@ KERNEL_V="$(uname -r)"
 PACKAGE="gvtg"
 DL_URL="https://github.com/ich777/unraid-plugins-repo/releases/download/$KERNEL_V"
 
-if [ ! -d "&plugin;/packages/${KERNEL_V%%-*}" ]; then
-  mkdir -p "&plugin;/packages/${KERNEL_V%%-*}"
+#Version check, create packages directory or delete it depending on unRAID version
+TARGET_V="6.9.9"
+COMPARE="$(cat /etc/unraid-version | cut -d '=' -f2 | cut -d '"' -f2)
+$TARGET_V"
+if [ "$TARGET_V" != "$(echo "$COMPARE" | sort -V | tail -1)" ]; then
+  if [ -d "&plugin;/packages" ]; then
+    rm -rf "&plugin;/packages"
+  fi
+else
+  if [ ! -d "&plugin;/packages/${KERNEL_V%%-*}" ]; then
+    mkdir -p "&plugin;/packages/${KERNEL_V%%-*}"
+  fi
 fi
 
 #Check for old packages
