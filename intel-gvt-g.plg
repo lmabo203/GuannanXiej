@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "intel-gvt-g">
 <!ENTITY author    "ich777">
-<!ENTITY version   "2021.07.11">
-<!ENTITY md5       "df8f98aea2431a1a8e957b2997d92e7b">
+<!ENTITY version   "2021.07.23">
+<!ENTITY md5       "aaa40ee615a084e56dec6651579b48a5">
 <!ENTITY launch    "Settings/&name;-main">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.2" support="https://forums.unraid.net/topic/108650-plugin-intel-gvt-g/">
 
 <CHANGES>
+
+###2021.07.23
+- Compatibility changes for Unraid 6.10.0
 
 ###2021.07.11
 - Added version check for packages directory
@@ -118,13 +121,19 @@ KERNEL_V="$(uname -r)"
 PACKAGE="gvtg"
 DL_URL="https://github.com/ich777/unraid-plugins-repo/releases/download/$KERNEL_V"
 
-#Version check, create packages directory or delete it depending on unRAID version
+#Version check, create packages directory or delete it and check if module is already blacklisted depending on unRAID version
 TARGET_V="6.9.9"
 COMPARE="$(cat /etc/unraid-version | cut -d '=' -f2 | cut -d '"' -f2)
 $TARGET_V"
 if [ "$TARGET_V" != "$(echo "$COMPARE" | sort -V | tail -1)" ]; then
   if [ -d "&plugin;/packages" ]; then
     rm -rf "&plugin;/packages"
+  fi
+  if [ ! "$(grep "blacklist" /boot/config/modprobe.d/i915.conf 2>/dev/null)" ]; then
+    if [ ! -d /boot/config/modprobe.d ]; then
+      mkdir -p /boot/config/modprobe.d
+    fi
+    echo "blacklist i915" >> /boot/config/modprobe.d/i915.conf
   fi
 else
   if [ ! -d "&plugin;/packages/${KERNEL_V%%-*}" ]; then
@@ -244,6 +253,11 @@ do
     usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh delete_vm_assignment "${line// /+}"
 done &lt; "/boot/config/plugins/intel-gvt-g/vms.conf"
 removepkg gvt.g-&version;
+if [ "$(grep -v "blacklist" /boot/config/modprobe.d/i915.conf 2>/dev/null)" ]; then
+  sed -i '/blacklist i915/d' /boot/config/modprobe.d/i915.conf
+else
+  rm -rf /boot/config/modprobe.d/i915.conf
+fi
 rm -rf &plugdir;
 rm -rf /boot/config/plugins/&name;
 rm -rf /etc/libvirt/hooks/qemu.orig
