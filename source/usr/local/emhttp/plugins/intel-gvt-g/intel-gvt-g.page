@@ -151,7 +151,7 @@ if (isset($GVTEnabled ) === true && trim($GVTEnabled ) === 'Y'):
     <span class="left"></span>
 </div>
 <h1 style="text-align: center; color: red;"><span>GVT-g not enabled in Kernel Module i915</span></a></h1>
-<p style="text-align: center; color: red;">Please make sure that your iGPU isn't enabled in the 'go' file with the command 'modprobe i915' and also make sure that the file '/boot/config/modprobe.d/i915.conf' doesn't exist and reboot your server! Enabling the module is handled by the Plugin!</p>
+<p style="text-align: center; color: red;">Please make sure that the file '/boot/config/modprobe.d/i915.conf' exist and contains the line 'blacklist i915' (without quotes).<br/>After ensuring that the file exist and contains the above content reboot your server!</p>
 
 <? endif; ?>
 
