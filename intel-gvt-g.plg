@@ -253,12 +253,10 @@ do
     usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh delete_vm_assignment "${line// /+}"
 done &lt; "/boot/config/plugins/intel-gvt-g/vms.conf"
 removepkg gvt.g-&version;
-if [ -f /boot/config/modprobe.d/i915.conf ]; then
-  if [ "$(grep -v "blacklist" /boot/config/modprobe.d/i915.conf 2>/dev/null)" ]; then
-    sed -i '/blacklist i915/d' /boot/config/modprobe.d/i915.conf
-  else
-    rm -rf /boot/config/modprobe.d/i915.conf
-  fi
+if [ "$(grep -v "blacklist" /boot/config/modprobe.d/i915.conf 2>/dev/null)" ]; then
+  sed -i '/blacklist i915/d' /boot/config/modprobe.d/i915.conf 2>/dev/null
+else
+  rm -rf /boot/config/modprobe.d/i915.conf 2>/dev/null
 fi
 rm -rf &plugdir;
 rm -rf /boot/config/plugins/&name;
