@@ -135,7 +135,7 @@ else
   fi
 fi
 
-#Check if i915 module is already blacklisted (unRAID v6.10up)
+#Check if i915 module is already blacklisted and let the plugin handle the activation from module/GVT-g/force_probe (unRAID v6.10up)
 if [ ! "$(grep "blacklist" /boot/config/modprobe.d/i915.conf 2>/dev/null)" ]; then
   if [ ! -d /boot/config/modprobe.d ]; then
     mkdir -p /boot/config/modprobe.d
