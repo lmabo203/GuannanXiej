@@ -121,7 +121,7 @@ KERNEL_V="$(uname -r)"
 PACKAGE="gvtg"
 DL_URL="https://github.com/ich777/unraid-plugins-repo/releases/download/$KERNEL_V"
 
-#Version check, create packages directory or delete it and check if module is already blacklisted depending on unRAID version
+#Version check, create packages directory or delete it depending on unRAID version
 TARGET_V="6.9.9"
 COMPARE="$(cat /etc/unraid-version | cut -d '=' -f2 | cut -d '"' -f2)
 $TARGET_V"
@@ -129,16 +129,18 @@ if [ "$TARGET_V" != "$(echo "$COMPARE" | sort -V | tail -1)" ]; then
   if [ -d "&plugin;/packages" ]; then
     rm -rf "&plugin;/packages"
   fi
-  if [ ! "$(grep "blacklist" /boot/config/modprobe.d/i915.conf 2>/dev/null)" ]; then
-    if [ ! -d /boot/config/modprobe.d ]; then
-      mkdir -p /boot/config/modprobe.d
-    fi
-    echo "blacklist i915" >> /boot/config/modprobe.d/i915.conf
-  fi
 else
   if [ ! -d "&plugin;/packages/${KERNEL_V%%-*}" ]; then
     mkdir -p "&plugin;/packages/${KERNEL_V%%-*}"
   fi
+fi
+
+#Check if i915 module is already blacklisted (unRAID v6.10up)
+if [ ! "$(grep "blacklist" /boot/config/modprobe.d/i915.conf 2>/dev/null)" ]; then
+  if [ ! -d /boot/config/modprobe.d ]; then
+    mkdir -p /boot/config/modprobe.d
+  fi
+  echo "blacklist i915" >> /boot/config/modprobe.d/i915.conf
 fi
 
 #Check for old packages
