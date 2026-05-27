@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "intel-gvt-g">
 <!ENTITY author    "ich777">
-<!ENTITY version   "2021.07.23">
-<!ENTITY md5       "aaa40ee615a084e56dec6651579b48a5">
+<!ENTITY version   "2021.09.17">
+<!ENTITY md5       "b319ccdd00a9f1c536e4aab15b6eafc2">
 <!ENTITY launch    "Settings/&name;-main">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.2" support="https://forums.unraid.net/topic/108650-plugin-intel-gvt-g/">
 
 <CHANGES>
+
+###2021.09.17
+- Fixed plugin to escape variables properly
 
 ###2021.07.23
 - Compatibility changes for Unraid 6.10.0
