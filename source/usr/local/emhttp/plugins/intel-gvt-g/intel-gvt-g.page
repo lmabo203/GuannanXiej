@@ -159,7 +159,7 @@ if (isset($GVTEnabled ) === true && trim($GVTEnabled ) === 'Y'):
 if(isset($_POST['assignVM'])) {
 $gvtselected = $_POST["gvtselected"];
 $vmselected = urlencode($_POST["vmselected"]);
-shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh assign_vm $vmselected {$_SESSION['gvtpci']} $gvtselected");
+shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh assign_vm ".escapeshellarg($vmselected)." {$_SESSION['gvtpci']} ".escapeshellarg($gvtselected)."");
 echo '<script>parent.window.location.reload();</script>';
 }
 ?>
@@ -167,7 +167,7 @@ echo '<script>parent.window.location.reload();</script>';
 <?php
 if(isset($_POST['deleteVMassignment'])) {
 $deletevmassignment = urlencode($_POST["deletevmassignment"]);
-shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh delete_vm_assignment $deletevmassignment");
+shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh delete_vm_assignment ".escapeshellarg($deletevmassignment)."");
 echo '<script>parent.window.location.reload();</script>';
 }
 ?>

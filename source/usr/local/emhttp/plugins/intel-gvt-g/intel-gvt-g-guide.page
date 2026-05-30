@@ -72,7 +72,7 @@ echo '<script>parent.window.location.reload();</script>';
 <?php
 if(isset($_POST['setGuC_HuC'])) {
 $guc_hucselected = $_POST["guc_hucselected"];
-shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh set_guc_huc $guc_hucselected");
+shell_exec("/usr/local/emhttp/plugins/intel-gvt-g/include/exec.sh set_guc_huc ".escapeshellarg($guc_hucselected)."");
 echo '<script>parent.window.location.reload();</script>';
 }
 ?>
